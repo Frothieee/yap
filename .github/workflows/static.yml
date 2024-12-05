@@ -1,0 +1,113 @@
+#<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yap & Drop</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      resize: none;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .thoughts {
+      margin-top: 20px;
+    }
+    .thought {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Yap & Drop</h1>
+    <p>Share your thoughts and let the world hear you!</p>
+  </header>
+  <div class="container">
+    <textarea id="thoughtInput" placeholder="What's on your mind?"></textarea>
+    <button onclick="addThought()">Post</button>
+    <div class="thoughts" id="thoughtsContainer"></div>
+  </div>
+
+  <script>
+    function addThought() {
+      const input = document.getElementById('thoughtInput');
+      const container = document.getElementById('thoughtsContainer');
+      
+      if (input.value.trim() !== "") {
+        const thoughtDiv = document.createElement('div');
+        thoughtDiv.className = 'thought';
+        thoughtDiv.textContent = input.value;
+        container.insertBefore(thoughtDiv, container.firstChild);
+        input.value = ""; // Clear the input
+      } else {
+        alert("Please write something before posting!");
+      }
+    }
+  </script>
+</body>
+</html>
+
+  cancel-in-progress: false
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
